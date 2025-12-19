@@ -1,8 +1,0 @@
-metric,value
-silhouette,0.047645971179008484
-calinski_harabasz,1.4316080055797458
-davies_bouldin,1.9431509330863825
-ari,
-nmi,
-purity,
-clusterer,kmeans
