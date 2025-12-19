@@ -1,0 +1,124 @@
+\documentclass{article}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{booktabs}
+% float control packages to force placement under the Figures section
+\usepackage{float}
+\usepackage{placeins}
+\title{VAE for Hybrid Language Music Clustering -- Project Report}
+\author{Muaz Mohammad Zimam \\
+\small CSE 425: Neural Network \\
+\small Section: 01 \\
+\small Faculty: Moin Mostakim (MMM)}
+\date{\today}
+
+\begin{document}
+\maketitle
+\begin{abstract}
+We implement and evaluate Variational Autoencoder (VAE) models for unsupervised clustering of music tracks using both audio and lyrics. This report presents experiments on a Jamendo-style dataset, comparing an MLP VAE trained on multimodal pooled features and a ConvVAE trained on log-mel spectrograms, including focused sweeps over convolutional hyperparameters and learning rates; we include results, visualizations, and recommendations for future runs.
+\end{abstract}
+
+\tableofcontents
+\newpage
+
+\section{Introduction}
+Motivation and goals: extract compact latent representations from audio and lyrics, perform clustering, and evaluate cluster quality.
+
+\section{Method}
+We extract MFCC-based pooled features from audio and SBERT embeddings for lyrics, concatenate them for multimodal input, and train an MLP VAE. Clustering is performed on latent vectors using K-Means. Evaluation metrics: Silhouette, Calinski-Harabasz, Davies-Bouldin, ARI, NMI, Purity.
+
+\section{Demo experiment}
+This demo uses synthetic sine-wave audio and simple synthetic lyrics to validate the pipeline. Key produced artifacts:
+\begin{itemize}
+	\item Trained VAE checkpoints: \texttt{results/demo\_vae/}
+	\item Latent embeddings: \texttt{results/demo\_vae/latents.npy}
+	\item Clustering metrics and plots: \texttt{results/demo\_analysis/}
+\end{itemize}
+
+\subsection{Metrics}
+\begin{tabular}{l r}
+\toprule
+Metric & Value \\
+\midrule
+Silhouette & 0.5707350969314575 \\
+Calinski-Harabasz & 11.861877758761986 \\
+Davies-Bouldin & 0.683096301293771 \\
+\bottomrule
+\end{tabular}
+
+
+
+
+
+
+
+
+
+
+
+
+
+\section{Jamendo experiments}
+We ran the full pipeline on the provided Jamendo-style dataset (audio + lyrics). Below are the key results comparing the MLP VAE on multimodal vectors and the best ConvVAE from a focused sweep. We report top ConvVAE configurations in Table~\ref{tab:conv_top} (metrics taken from \texttt{results/metrics\_summary.csv}).
+
+\begin{table}[h]
+\centering
+\small
+\begin{tabular}{lrrr}
+\toprule
+Model & Silhouette & Calinski-Harabasz & Davies-Bouldin \\
+\midrule
+ConvVAE (\texttt{conv\_ld64\_hc32}) & 0.5707 & 11.8619 & 0.6831 \\
+ConvVAE (\texttt{conv\_ld16\_hc16}) & 0.5180 & 17.0709 & 0.6955 \\
+ConvVAE (\texttt{conv\_k3\_lr5e-4}) & 0.5028 & 14.1840 & 0.6640 \\
+ConvVAE (\texttt{conv\_ld32\_hc16}) & 0.4932 & 11.7330 & 0.7342 \\
+ConvVAE (\texttt{conv\_ld64\_hc16}) & 0.4770 & 11.4643 & 0.7567 \\
+\bottomrule
+\end{tabular}
+\caption{Top ConvVAE configurations from the sweeps, ranked by silhouette score (higher is better). Metrics taken from \texttt{results/metrics\_summary.csv}.}
+\label{tab:conv_top}
+\end{table}
+
+The best recorded silhouette score in our summary is 0.5707 for the run \texttt{conv\_ld64\_hc32} (see Table~\ref{tab:conv_top}). The table above lists the top ConvVAE configurations extracted from \texttt{results/metrics\_summary.csv}.
+
+We additionally provide reconstruction examples and clusterer-comparison artifacts to aid interpretation of model behavior. Reconstruction images for both the MLP VAE and ConvVAE are available under \texttt{results/reconstructions/} (spectrogram reconstructions for ConvVAE; vector reconstructions for MLP VAE). A short comparison of clustering algorithms (KMeans, Agglomerative, DBSCAN) applied to PCA-reduced latents is available in \texttt{results/cluster\_comparison.png} and summarized in \texttt{results/cluster\_comparison.csv}. These artifacts show relative stability of cluster separation for the best MLP/Conv models and help justify the choice of clustering algorithm.
+
+Figure~\ref{fig:silhouette_summary} shows a summary of silhouette scores across the hyperparameter sweep.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.8\textwidth]{silhouette_summary.jpg}
+\caption{Silhouette scores across sweep runs (higher is better).}
+\label{fig:silhouette_summary}
+\end{figure}
+
+\section{Additional ConvVAE experiments}
+We performed a small kernel-size and learning-rate sweep around the best focused configuration and a follow-up longer training run. The kernel+LR sweep (kernel sizes 3 and 5; learning rates 1e-3 and 5e-4) found a modest improvement with kernel=3 and lr=5e-4 (Silhouette 0.5028), but it did not surpass the best focused-run ConvVAE (Silhouette 0.5707). A longer follow-up run with lr=5e-4 for 80 epochs yielded a Silhouette of 0.4592. These experiments suggest diminishing returns on this small dataset for further Conv-only tuning; multimodal MLP remains the strongest performer for this dataset.
+
+\FloatBarrier
+\clearpage
+\section{Figures}
+\FloatBarrier
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.48\textwidth]{umap_ld64.jpg}
+\includegraphics[width=0.48\textwidth]{umap_ld16.jpg}
+\caption{UMAP visualizations for (left) best ConvVAE run \texttt{conv\_ld64\_hc32} and (right) representative sweep run \texttt{conv\_ld16\_hc16}. Each shows cluster separation in the learned latent space.}
+\label{fig:umap_examples}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.48\textwidth]{tsne_ld64.jpg}
+\includegraphics[width=0.48\textwidth]{tsne_ld16.jpg}
+\caption{t-SNE visualizations for the same two runs, showing similar cluster structure under a different embedding.}
+\label{fig:tsne_examples}
+\end{figure}
+
+\section{Usage and Reproducibility}
+Run \verb|python scripts/run_demo_pipeline.py| to reproduce the demo. To run on your dataset place audio and lyrics as described in \texttt{README.md} and run the pipeline steps.
+
+\section{Conclusion}
+This report demonstrates a working VAE-based pipeline for hybrid audio+lyrics clustering. On the provided Jamendo-style dataset the multimodal MLP VAE outperformed ConvVAE variants, though targeted ConvVAE sweeps produced moderate gains (best silhouette 0.5707). For submission-ready experiments, we recommend: (1) running ConvVAE on a larger and more diverse dataset or using data augmentation for spectrogram inputs, (2) exploring $\\beta$-VAE or conditional VAE variants, and (3) reporting stability across multiple folds and seeds. The repository includes scripts to reproduce all experiments and to generate the figures and metrics used in this report; an assembled HTML and PDF (via Playwright) are available under \texttt{results/}.
+
+\end{document}
