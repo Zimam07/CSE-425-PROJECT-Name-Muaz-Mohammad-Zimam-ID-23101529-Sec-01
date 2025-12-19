@@ -1,0 +1,5 @@
+metric,value
+n_samples,8
+n_features,848
+n_clusters,2
+silhouette,0.04764603450894356
