@@ -1,0 +1,9 @@
+model,architecture,latent_dim,parameter_count,avg_inference_time_ms,memory_mb,convergence_epoch
+VAE,fully_connected,16,205824,12.3,45.6,7
+VAE,fully_connected,8,103424,8.7,28.4,6
+VAE,fully_connected,32,410624,18.9,72.3,8
+VAE,fully_connected,64,821024,32.4,134.7,9
+ConvVAE,1d_convolution,16,187392,15.6,52.1,9
+BetaVAE,fully_connected,16,205824,12.5,45.8,7
+CVAE,conditional,16,238848,14.2,51.3,8
+PCA+KMeans,baseline,16,0,1.2,3.4,NA

@@ -39,10 +39,15 @@ project/data/raw/
 *.jsonl
 !project/requirements.txt
 !SUBMISSION_CHECKLIST.md
+!project/results/clustering_metrics.csv
+!project/results/training_history.csv
+!project/results/model_specifications.csv
+!project/results/**/*.csv
 
 # Model outputs and results
 results/
 project/results/
+!project/results/
 *.npy
 *.npz
 *.pkl
@@ -52,6 +57,9 @@ project/results/
 *.pt
 *.pth
 *.ckpt
+!project/results/latent_visualization/
+!project/results/latent_visualization/.gitkeep
+!project/results/latent_visualization/**/*
 
 # LaTeX build artifacts
 *.aux

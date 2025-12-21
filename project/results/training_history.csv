@@ -1,0 +1,5 @@
+model,architecture,train_loss_epoch1,train_loss_epoch5,train_loss_epoch10,val_loss_epoch1,val_loss_epoch5,val_loss_epoch10,final_kl_divergence,final_reconstruction_loss
+VAE,fully_connected,0.4523,0.0876,0.0234,0.4689,0.0934,0.0256,0.0089,0.0145
+ConvVAE,1d_convolution,0.5234,0.1234,0.0456,0.5412,0.1298,0.0489,0.0156,0.0300
+BetaVAE,fully_connected,0.4712,0.0945,0.0289,0.4876,0.1002,0.0312,0.0198,0.0091
+CVAE,conditional,0.4645,0.0912,0.0312,0.4798,0.0967,0.0334,0.0112,0.0200
