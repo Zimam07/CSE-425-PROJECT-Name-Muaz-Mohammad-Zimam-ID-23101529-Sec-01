@@ -1,0 +1,4 @@
+clusterer,silhouette,calinski_harabasz,davies_bouldin,ari,nmi,purity,clusterer
+kmeans,0.25545331835746765,5.708191252887595,1.312201739397983,1.0,1.0,1.0,kmeans
+agglomerative,0.25545331835746765,5.708191252887595,1.312201739397983,1.0,1.0,1.0,agglomerative
+dbscan,,,,0.0,0.0,0.5,dbscan
