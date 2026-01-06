@@ -16,6 +16,11 @@ env/
 ENV/
 .venv
 project/venv/
+-.venv/
+
+# Local tools and archives
+tectonic-bin/
+*.zip
 
 # Jupyter Notebook checkpoints
 .ipynb_checkpoints/
@@ -60,6 +65,9 @@ project/results/
 !project/results/latent_visualization/
 !project/results/latent_visualization/.gitkeep
 !project/results/latent_visualization/**/*
+
+# Keep top-level checklist
+!SUBMISSION_CHECKLIST.md
 
 # LaTeX build artifacts
 *.aux
